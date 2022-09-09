@@ -1,5 +1,6 @@
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 import { useRouter } from "next/router";
+import { Fragment } from "react";
 const NewMeetUp = () => {
   const router = useRouter();
   const addMeetUpHandler = async (enteredMeetupData) => {
