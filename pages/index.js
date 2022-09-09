@@ -1,29 +1,37 @@
 import MeetupList from "../components/meetups/MeetupList";
-const meetupsList = [
-  {
-    id: `m1`,
-    title: `First Meetup Spot`,
-    image: `https://www.roadaffair.com/wp-content/uploads/2018/07/aerial-view-cathedral-assumption-varna-bulgaria-shutterstock_511415530.jpg`,
-    address: `The church in Varna`,
-    description: `This is the first meetup place`,
-  },
-  {
-    id: `m2`,
-    title: `Second Meetup Spot`,
-    image: `https://www.roadaffair.com/wp-content/uploads/2018/07/nesebar-bulgaria-shutterstock_676441705.jpg`,
-    address: `Nessebar's bay`,
-    description: `This is the second meetup place- in Nessebar`,
-  },
-  {
-    id: `m3`,
-    title: `Third Meetup Spot`,
-    image: `https://www.roadaffair.com/wp-content/uploads/2018/07/dospat-reservoir-smolyan-region-bulgaria-shutterstock_572058349.jpg`,
-    address: `Snezhanka`,
-    description: `This is the third meetup place - Smolyan`,
-  },
-];
-const Homepage = () => {
-  return <MeetupList meetups={meetupsList} />;
+import Head from "next/head";
+import { MongoClient } from "mongodb";
+import { Fragment } from "react";
+const Homepage = ({ meetups }) => {
+  return (
+    <Fragment>
+      <Head>
+        <title>React Meetups</title>
+        <meta name="Browse a list of meetups - assembled in React and Next.js" />
+      </Head>
+      <MeetupList meetups={meetups} />
+    </Fragment>
+  );
 };
 
+export async function getStaticProps() {
+  const client = await MongoClient.connect(
+    `mongodb+srv://peter:55555@cluster.4rlz1th.mongodb.net/?retryWrites=true&w=majority`
+  );
+  const db = client.db();
+  const collection = db.collection(`meetups`);
+  const meetups = await collection.find().toArray();
+  console.log(meetups);
+  client.close();
+  return {
+    props: {
+      meetups: meetups.map((el) => ({
+        title: el.title,
+        address: el.address,
+        image: el.image,
+        id: el._id.toString(),
+      })),
+    },
+  };
+}
 export default Homepage;
