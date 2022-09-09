@@ -2,7 +2,6 @@ import MeetupList from "../components/meetups/MeetupList";
 import Head from "next/head";
 import { Fragment } from "react";
 import { MongoClient } from "mongodb";
-import { Fragment } from "react";
 const Homepage = ({ meetups }) => {
   return (
     <Fragment>
